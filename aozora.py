@@ -1,3 +1,4 @@
+# 対象の著者の作品をすべて取得する
 import time
 import re
 import requests
@@ -6,23 +7,27 @@ import os
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from tqdm import tqdm
+from search_authors import searchAuthors
+from processing_status import psm
 
 def bookInfo(url):
     res = requests.get(url)
     soup = BeautifulSoup(res.content, 'html.parser')
 
     # 情報を取得
-    title = soup.find('h1').text
-    author = soup.find('h2').text
-    main_text = soup.find('div').text
+    try:
+        title = soup.find('h1').text
+        author = soup.find('h2').text
+        main_text = soup.find('div').text
+        # 本文から不要な記述を削除
+        remove_text = ['\n', r'\u', '\r', '\u3000']
+        for rt in remove_text:
+            main_text = main_text.replace(rt, '')
+        main_text = re.sub('\d{1,}［＃「\d{1,}」は縦中横］', '', main_text)
+        return [title, author, main_text]
 
-    # 本文から不要な記述を削除
-    remove_text = ['\n', r'\u', '\r', '\u3000']
-    for rt in remove_text:
-        main_text = main_text.replace(rt, '')
-    main_text = re.sub('\d{1,}［＃「\d{1,}」は縦中横］', '', main_text)
-
-    return [title, author, main_text]
+    except:
+        pass
 
 
 def clickDetail(url):
@@ -96,21 +101,42 @@ class Db():
         conn.close()
         return data
 
-def main():
-    dbname = 'aozora_akutagawa.db'
+def scraping(url, dbname):
     db=Db(dbname)
     # dbが存在しなければ作成
     if not isFile(dbname):
         db.db_create()
 
-    urls = urlAcquisition('https://www.aozora.gr.jp/index_pages/person879.html#sakuhin_list_1')
+    urls = urlAcquisition(url)
     for url in tqdm(urls):
         article = (clickDetail(url))
         db.db_input(article)
         time.sleep(1)
 
+
+
+def main():
+    dbname = './db/authors_limit300.db'
+    db=Db(dbname)
+    # dbが存在しなければ作成
+    if not isFile(dbname):
+        db.db_create()
+
+    author_urls = searchAuthors()
+    author_count = 0
+    for author_url in author_urls:
+        author_count += 1
+        urls = urlAcquisition(author_url[1])
+        txt = str(author_url[0]) + "　取得中　" + str(author_count) + "/" + str(len(author_urls))
+        psm(txt)
+        for url in tqdm(urls):
+            article = (clickDetail(url))
+            db.db_input(article)
+            time.sleep(1)
+
+
 def check():
-  dbname = 'aozora_akutagawa.db'
+  dbname = './db/authors_limit300.db'
   db = Db(dbname)
   print(db.db_output())
 
