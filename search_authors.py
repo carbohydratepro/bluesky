@@ -1,17 +1,18 @@
 import re
 import requests
-import aozora
 import time
+import datetime
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from tqdm import tqdm
 from processing_status import psm
 
-def search_urls(url, pattern, text_search=False, lower=20): # pattern：正規表現
+def searchUrls(url, pattern, text_search=False, lower=20): # pattern：正規表現
     urls = []
     res = requests.get(url)
     soup = BeautifulSoup(res.content, 'html.parser')
 
+    time = 0
     # patternに一致するURLを取得
     url_pattern = re.compile(pattern)
     for link in soup.find_all('a'):
@@ -21,30 +22,38 @@ def search_urls(url, pattern, text_search=False, lower=20): # pattern：正規�
             if text_search:
                 book_num = re.sub(r"\D", "", link.parent.text)
                 if int(book_num) > lower:
+                    time += int(book_num)
                     text = link.text
                     urls.append([text, temp_url])
             else:
                 urls.append(temp_url)
 
+    return urls, time
 
-    return urls
 
-
-def search_authors():
-    a_rows = search_urls('https://www.aozora.gr.jp/', 'index_pages/person_.+\.html') #url, 著者名
+def searchAuthors():
+    a_rows, temp = searchUrls('https://www.aozora.gr.jp/', 'index_pages/person_.+\.html') #url, 著者名
 
     author_urls = []
-    psm("対象の著者URL取得完了")
+    a_time = 0
+    lower_limit = 300
+    psm("対象の著者URL取得")
     for a_row in tqdm(a_rows):
-        author_urls += search_urls(a_row, 'person\d{1,}\.html#sakuhin_list_1', True, lower=100)
+        url, ts = searchUrls(a_row, 'person\d{1,}\.html#sakuhin_list_1', True, lower=lower_limit)
+        author_urls += url
+        a_time += ts
         time.sleep(1)
 
+    print("予想取得完了時間は：", datetime.timedelta(seconds=(a_time*1.5)))
     # for author in authors():
     #     aozora.scraping(author[0], author[1])
 
+    return author_urls
+
 
 def main():
-    search_authors()
+    urls = searchAuthors()
+    print(urls)
 
 
 if __name__ == "__main__":

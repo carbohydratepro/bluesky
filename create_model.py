@@ -25,30 +25,34 @@ class Model():
 
 
 def create(modelname):
-    dbname = 'aozora_akutagawa.db'
+    dbname = './db/authors_limit300.db'
     db = Db(dbname)
-    documents = [data[3] for data in db.db_output()] #二次元配列で文章を格納
+    documents = [(data[3], data[2]) for data in db.db_output()] #二次元配列で文章を格納
+
     t = Tokenizer()
 
     created_data = []
-    count = 0
 
     for strings in tqdm(documents):
-        created_data.append(TaggedDocument([token.surface for token in t.tokenize(strings)], [count]))
-        count += 1
+        created_data.append(TaggedDocument([token.surface for token in t.tokenize(strings[0])], [strings[1]]))
 
     model = Doc2Vec(created_data, dm=1, vector_size=200, min_count=10, epochs=20)
     Model(modelname).save(model)
 
 
+def ratingAverage(num): #num：配列
+    return sum(num)/len(num)
 
 def main():
-    modelname = 'akutagawa_test.model'
+    modelname = './model/authors_limit300.model'
     if not isFile(modelname):
         create(modelname)
 
     model = Model(modelname).read()
-    print(model.docvecs.most_similar(10))
+    sim = model.dv.most_similar(1)
+    print(sim)
+    print(ratingAverage([s[1] for s in sim]))
+
 
 if __name__ == "__main__":
     main()

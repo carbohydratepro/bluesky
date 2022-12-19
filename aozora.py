@@ -16,9 +16,9 @@ def bookInfo(url):
 
     # 情報を取得
     try:
-        title = soup.find('h1').text
-        author = soup.find('h2').text
-        main_text = soup.find('div').text
+        title = soup.find('h1', class_='title').text
+        author = soup.find('h2', class_='author').text
+        main_text = soup.find('div', class_='main_text').text
         # 本文から不要な記述を削除
         remove_text = ['\n', r'\u', '\r', '\u3000']
         for rt in remove_text:
@@ -138,9 +138,13 @@ def main():
 def check():
   dbname = './db/authors_limit300.db'
   db = Db(dbname)
-  print(db.db_output())
+  data = db.db_output()
+  print(data)
+
+def test():
+  print(bookInfo("https://www.aozora.gr.jp/cards/000879/files/43365_26114.html"))
 
 # soup.find('div', {'class': 'main_text'}).get_text().strip('\r''\n''\u3000').split('。')
 
 if __name__ == "__main__":
-    main()
+    check()
