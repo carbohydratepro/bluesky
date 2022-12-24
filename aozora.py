@@ -9,6 +9,7 @@ from urllib.parse import urljoin
 from tqdm import tqdm
 from search_authors import searchAuthors
 from processing_status import psm
+from difflib import SequenceMatcher
 
 def bookInfo(url):
     res = requests.get(url)
@@ -116,7 +117,7 @@ def scraping(url, dbname):
 
 
 def main():
-    dbname = './db/authors_limit300.db'
+    dbname = './db/authors_limit300_test.db'
     db=Db(dbname)
     # dbが存在しなければ作成
     if not isFile(dbname):
@@ -131,12 +132,13 @@ def main():
         psm(txt)
         for url in tqdm(urls):
             article = (clickDetail(url))
-            db.db_input(article)
+            if len(article) == 3 and SequenceMatcher(None, article[1], author_url[0]).ratio() >= 0.5: #正しいデータのみをDBに格納（作者が正しいかどうかを検証）
+                db.db_input(article)
             time.sleep(1)
 
 
 def check():
-  dbname = './db/authors_limit300.db'
+  dbname = './db/authors_limit300_test.db'
   db = Db(dbname)
   data = db.db_output()
   print(data)
@@ -147,4 +149,4 @@ def test():
 # soup.find('div', {'class': 'main_text'}).get_text().strip('\r''\n''\u3000').split('。')
 
 if __name__ == "__main__":
-    check()
+    main()
