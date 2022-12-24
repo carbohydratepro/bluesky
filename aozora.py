@@ -117,11 +117,13 @@ def scraping(url, dbname):
 
 
 def main():
-    dbname = './db/authors_limit300_test.db'
+    dbname = './db/authors_limit300_errortest.db'
     db=Db(dbname)
     # dbが存在しなければ作成
     if not isFile(dbname):
         db.db_create()
+
+    errors = []
 
     author_urls = searchAuthors()
     author_count = 0
@@ -130,15 +132,21 @@ def main():
         urls = urlAcquisition(author_url[1])
         txt = str(author_url[0]) + "　取得中　" + str(author_count) + "/" + str(len(author_urls))
         psm(txt)
-        for url in tqdm(urls):
+        for i, url in enumerate(tqdm(urls)):
             article = (clickDetail(url))
-            if len(article) == 3 and SequenceMatcher(None, article[1], author_url[0]).ratio() >= 0.5: #正しいデータのみをDBに格納（作者が正しいかどうかを検証）
-                db.db_input(article)
+            try:
+                if (len(article) == 3 and SequenceMatcher(None, article[1], author_url[0]).ratio() >= 0.5): #正しいデータのみをDBに格納（作者が正しいかどうかを検証）
+                    db.db_input(article)
+            except (TypeError) as e:
+                errors.append(article[1], i, e)
             time.sleep(1)
+
+    for error in errors:
+        print("著者名：", error[0], "\n作品番号：", error[1], "\nエラー内容：", error[2])
 
 
 def check():
-  dbname = './db/authors_limit300_test.db'
+  dbname = './db/authors_limit300.db'
   db = Db(dbname)
   data = db.db_output()
   print(data)
