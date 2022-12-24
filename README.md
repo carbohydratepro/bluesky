@@ -8,3 +8,5 @@ cd bluesky
 mkdir db
 mkdir model
 ```
+
+# ～編集中～
