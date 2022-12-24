@@ -117,7 +117,7 @@ def scraping(url, dbname):
 
 
 def main():
-    dbname = './db/authors_limit300.db'
+    dbname = './db/authors_limit300_errortest.db'
     db=Db(dbname)
     # dbが存在しなければ作成
     if not isFile(dbname):
@@ -137,13 +137,16 @@ def main():
             try:
                 if (len(article) == 3 and SequenceMatcher(None, article[1], author_url[0]).ratio() >= 0.5): #正しいデータのみをDBに格納（作者が正しいかどうかを検証）
                     db.db_input(article)
-            except TypeError as e:
+            except (TypeError) as e:
                 errors.append(article[1], i, e)
             time.sleep(1)
 
+    for error in errors:
+        print("著者名：", error[0], "\n作品番号：", error[1], "\nエラー内容：", error[2])
+
 
 def check():
-  dbname = './db/authors_limit300_t.db'
+  dbname = './db/authors_limit300.db'
   db = Db(dbname)
   data = db.db_output()
   print(data)
