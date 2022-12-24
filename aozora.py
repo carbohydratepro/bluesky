@@ -127,7 +127,7 @@ def main():
 
     author_urls = searchAuthors()
     author_count = 0
-    for author_url in author_urls:
+    for author_url in list(reversed(author_urls)):
         author_count += 1
         urls = urlAcquisition(author_url[1])
         txt = str(author_url[0]) + "　取得中　" + str(author_count) + "/" + str(len(author_urls))
@@ -137,8 +137,8 @@ def main():
             try:
                 if (len(article) == 3 and SequenceMatcher(None, article[1], author_url[0]).ratio() >= 0.5): #正しいデータのみをDBに格納（作者が正しいかどうかを検証）
                     db.db_input(article)
-            except (TypeError) as e:
-                errors.append(article[1], i, e)
+            except TypeError as e:
+                errors.append([author_url[0], i, e])
             time.sleep(1)
 
     for error in errors:
