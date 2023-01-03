@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 from tqdm import tqdm
 from processing_status import psm
 
-def searchUrls(url, pattern, text_search=False, lower=20): # pattern：正規表現
+def searchUrls(url, pattern, text_search=False, lower=20, authors=None): # pattern：正規表現
     urls = []
     res = requests.get(url)
     soup = BeautifulSoup(res.content, 'html.parser')
@@ -22,9 +22,10 @@ def searchUrls(url, pattern, text_search=False, lower=20): # pattern：正規表
             if text_search:
                 book_num = re.sub(r"\D", "", link.parent.text)
                 if int(book_num) > lower:
-                    time += int(book_num)
-                    text = link.text
-                    urls.append([text, temp_url])
+                    if authors is None or link.text in authors:
+                        time += int(book_num)
+                        text = link.text
+                        urls.append([text, temp_url])
             else:
                 urls.append(temp_url)
 
@@ -36,10 +37,11 @@ def searchAuthors():
 
     author_urls = []
     a_time = 0
-    lower_limit = 300
-    psm("対象の著者URL取得")
+    lower_limit = 1
+    target_authors = ["芥川 竜之介", "中島 敦", "太宰 治", "夏目 漱石", "宮沢 賢治", "森 鴎外", "中原 中也", "正岡 子規", "樋口 一葉", "泉 鏡花", "与謝野 晶子", "島崎 藤村", "石川 啄木", "国木田 独歩"]
+    psm("対象の著者URL取得中")
     for a_row in tqdm(a_rows):
-        url, ts = searchUrls(a_row, 'person\d{1,}\.html#sakuhin_list_1', True, lower=lower_limit)
+        url, ts = searchUrls(a_row, 'person\d{1,}\.html#sakuhin_list_1', True, lower=lower_limit, authors=target_authors)
         author_urls += url
         a_time += ts
         time.sleep(1)

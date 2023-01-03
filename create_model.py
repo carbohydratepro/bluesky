@@ -25,7 +25,7 @@ class Model():
 
 
 def create(modelname):
-    dbname = '../bluesky_data/db/authors_limit300.db'
+    dbname = '../bluesky_data/db/authors_famous_all.db'
     db = Db(dbname)
     documents = [(data[3], data[2]) for data in db.db_output()] #二次元配列で文章を格納
 
@@ -44,7 +44,8 @@ def ratingAverage(num): #num：配列
     return sum(num)/len(num)
 
 def main():
-    modelname = '../bluesky_data/model/authors_limit300.model'
+    modelname = '../bluesky_data/model/authors_famous_all.model'
+
     if not isFile(modelname):
         create(modelname)
 

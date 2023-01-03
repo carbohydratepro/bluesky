@@ -118,6 +118,7 @@ def scraping(url, dbname):
 
 def main():
     dbname = '../bluesky_data/db/authors_famous_all.db'
+
     db=Db(dbname)
     # dbが存在しなければ作成
     if not isFile(dbname):
@@ -147,6 +148,7 @@ def main():
 
 def check():
     dbname = '../bluesky_data/db/authors_famous_all.db'
+
     db = Db(dbname)
     data = db.db_output()
     authors = [[], []]
@@ -169,6 +171,7 @@ def check():
         if (SequenceMatcher(None, d[1], search_words).ratio() >= 0.5 or
             SequenceMatcher(None, d[2], search_words).ratio() >= 0.5):
             print(d)
+
 
 
 
