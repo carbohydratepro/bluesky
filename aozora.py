@@ -117,7 +117,7 @@ def scraping(url, dbname):
 
 
 def main():
-    dbname = './db/authors_limit300_errortest.db'
+    dbname = './db/authors_famous_all.db'
     db=Db(dbname)
     # dbが存在しなければ作成
     if not isFile(dbname):
@@ -146,10 +146,23 @@ def main():
 
 
 def check():
-  dbname = './db/authors_limit300.db'
-  db = Db(dbname)
-  data = db.db_output()
-  print(data)
+    dbname = './db/authors_famous_all.db'
+    db = Db(dbname)
+    data = db.db_output()
+    authors = [[], []]
+    for d in data:
+        d = list(d)
+        if d[2] not in authors[0]:
+            authors[0].append(d[2])
+            authors[1].append(1)
+        else:
+            authors[1][authors[0].index(d[2])] += 1
+
+
+    for a, n in zip(authors[0], authors[1]):
+        print(a, "：", n)
+
+
 
 def test():
   print(bookInfo("https://www.aozora.gr.jp/cards/000879/files/43365_26114.html"))
