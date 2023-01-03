@@ -117,7 +117,7 @@ def scraping(url, dbname):
 
 
 def main():
-    dbname = './db/authors_famous_all.db'
+    dbname = '../bluesky_data/db/authors_famous_all.db'
     db=Db(dbname)
     # dbが存在しなければ作成
     if not isFile(dbname):
@@ -146,7 +146,7 @@ def main():
 
 
 def check():
-    dbname = './db/authors_famous_all.db'
+    dbname = '../bluesky_data/db/authors_famous_all.db'
     db = Db(dbname)
     data = db.db_output()
     authors = [[], []]
