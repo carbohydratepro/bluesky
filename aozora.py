@@ -117,31 +117,60 @@ def scraping(url, dbname):
 
 
 def main():
-    dbname = './db/authors_limit300_test.db'
+    dbname = './db/authors_famous_all.db'
     db=Db(dbname)
     # dbが存在しなければ作成
     if not isFile(dbname):
         db.db_create()
 
+    errors = []
+
     author_urls = searchAuthors()
     author_count = 0
-    for author_url in author_urls:
+    for author_url in list(reversed(author_urls)):
         author_count += 1
         urls = urlAcquisition(author_url[1])
         txt = str(author_url[0]) + "　取得中　" + str(author_count) + "/" + str(len(author_urls))
         psm(txt)
-        for url in tqdm(urls):
+        for i, url in enumerate(tqdm(urls)):
             article = (clickDetail(url))
-            if len(article) == 3 and SequenceMatcher(None, article[1], author_url[0]).ratio() >= 0.5: #正しいデータのみをDBに格納（作者が正しいかどうかを検証）
-                db.db_input(article)
+            try:
+                if (len(article) == 3 and SequenceMatcher(None, article[1], author_url[0]).ratio() >= 0.5): #正しいデータのみをDBに格納（作者が正しいかどうかを検証）
+                    db.db_input(article)
+            except TypeError as e:
+                errors.append([author_url[0], i, e])
             time.sleep(1)
+
+    for error in errors:
+        print("著者名：", error[0], "\n作品番号：", error[1], "\nエラー内容：", error[2])
 
 
 def check():
-  dbname = './db/authors_limit300_test.db'
-  db = Db(dbname)
-  data = db.db_output()
-  print(data)
+    dbname = './db/authors_famous_all.db'
+    db = Db(dbname)
+    data = db.db_output()
+    authors = [[], []]
+    for d in data:
+        d = list(d)
+        if d[2] not in authors[0]:
+            authors[0].append(d[2])
+            authors[1].append(1)
+        else:
+            authors[1][authors[0].index(d[2])] += 1
+
+
+    for a, n in zip(authors[0], authors[1]):
+        print(a, "：", n)
+
+    #データベースに検索をかける
+    for d in data:
+        d = list(d)
+        search_words = "銀河鉄道の夜"
+        if (SequenceMatcher(None, d[1], search_words).ratio() >= 0.5 or
+            SequenceMatcher(None, d[2], search_words).ratio() >= 0.5):
+            print(d)
+
+
 
 def test():
   print(bookInfo("https://www.aozora.gr.jp/cards/000879/files/43365_26114.html"))
@@ -149,4 +178,4 @@ def test():
 # soup.find('div', {'class': 'main_text'}).get_text().strip('\r''\n''\u3000').split('。')
 
 if __name__ == "__main__":
-    main()
+    check()
