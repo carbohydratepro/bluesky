@@ -1,4 +1,5 @@
 # 対象の著者の作品をすべて取得する
+# コマンド処理は未実装
 import time
 import re
 import requests
@@ -147,7 +148,7 @@ def main():
 
 
 def check():
-    dbname = '../bluesky_data/db/authors_famous_all.db'
+    dbname = '../bluesky_data/db/akuta_dazai_limit20.db'
 
     db = Db(dbname)
     data = db.db_output()
@@ -165,15 +166,30 @@ def check():
         print(a, "：", n)
 
     #データベースに検索をかける
+    new_data = []
     for d in data:
         d = list(d)
-        search_words = "銀河鉄道の夜"
-        if (SequenceMatcher(None, d[1], search_words).ratio() >= 0.5 or
-            SequenceMatcher(None, d[2], search_words).ratio() >= 0.5):
-            print(d)
+        search_words = ["芥川 龍之介", "太宰 治"]
+        for  sw in search_words:
+            if (SequenceMatcher(None, d[1], sw).ratio() >= 0.5 or
+                SequenceMatcher(None, d[2], sw).ratio() >= 0.5):
+                new_data.append(d[1:4])
 
 
+    #過去のデータを用いて新たなデータベースを生成する場合はコメントアウトを外す
+    # 新しく生成したデータを削る
+    # new_data = new_data[0:20] + new_data[-21:-1]
+    # new_dbname = '../bluesky_data/db/akuta_dazai_limit20.db'
+    # reuse(new_dbname, new_data)
 
+def reuse(dbname, data):
+    db = Db(dbname)
+    # dbが存在しなければ作成
+    if not isFile(dbname):
+        db.db_create()
+
+    for d in data:
+        db.db_input(d)
 
 def test():
   print(bookInfo("https://www.aozora.gr.jp/cards/000879/files/43365_26114.html"))
