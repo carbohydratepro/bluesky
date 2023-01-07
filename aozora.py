@@ -148,7 +148,7 @@ def main():
 
 
 def check():
-    dbname = '../bluesky_data/db/akuta_dazai_limit20.db'
+    dbname = '../bluesky_data/db/authors_famous_all.db'
 
     db = Db(dbname)
     data = db.db_output()
@@ -162,24 +162,29 @@ def check():
             authors[1][authors[0].index(d[2])] += 1
 
 
-    for a, n in zip(authors[0], authors[1]):
-        print(a, "：", n)
+    # for a, n in zip(authors[0], authors[1]):
+    #     print(a, "：", n)
 
     #データベースに検索をかける
-    new_data = []
-    for d in data:
-        d = list(d)
-        search_words = ["芥川 龍之介", "太宰 治"]
-        for  sw in search_words:
-            if (SequenceMatcher(None, d[1], sw).ratio() >= 0.5 or
-                SequenceMatcher(None, d[2], sw).ratio() >= 0.5):
-                new_data.append(d[1:4])
+    search_words = ["銀河鉄道の夜", "注文の多い料理店", "セロ弾きのゴーシュ", "やまなし", "どんぐりと山猫",
+                "羅生門", "鼻", "河童", "歯車", "老年",
+                "斜陽", "走れメロス", "津軽", "お伽草紙", "人間失格",
+                "吾輩は猫である", "坊ちゃん", "草枕", "虜美人草", "三四郎"]
 
+    new_data = []
+
+    for  sw in search_words:
+        for d in data:
+            d = list(d)
+            if (SequenceMatcher(None, d[1], sw).ratio() >= 0.95):
+                new_data.append(d[1:4])
+                print(d[1])
+                break
 
     #過去のデータを用いて新たなデータベースを生成する場合はコメントアウトを外す
     # 新しく生成したデータを削る
     # new_data = new_data[0:20] + new_data[-21:-1]
-    # new_dbname = '../bluesky_data/db/akuta_dazai_limit20.db'
+    # new_dbname = '../bluesky_data/db/PE01.db'
     # reuse(new_dbname, new_data)
 
 def reuse(dbname, data):
@@ -193,6 +198,10 @@ def reuse(dbname, data):
 
 def test():
   print(bookInfo("https://www.aozora.gr.jp/cards/000879/files/43365_26114.html"))
+
+def shapeUp(text, pattern):
+    text = re.sub(pattern, '', text)
+    return text
 
 # soup.find('div', {'class': 'main_text'}).get_text().strip('\r''\n''\u3000').split('。')
 

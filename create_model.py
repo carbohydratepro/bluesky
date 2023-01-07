@@ -36,7 +36,7 @@ def create(modelname):
     for strings in tqdm(documents):
         created_data.append(TaggedDocument([token.surface for token in t.tokenize(strings[0])], [strings[1]]))
 
-    model = Doc2Vec(created_data, dm=1, vector_size=200, min_count=10, epochs=20)
+    model = Doc2Vec(created_data, dm=0, vector_size=200, min_count=10, epochs=20)
     Model(modelname).save(model)
 
 
@@ -50,10 +50,10 @@ def main():
         create(modelname)
 
     model = Model(modelname).read()
-    sim = model.dv.most_similar(1)
+    sim = model.dv.most_similar('太宰治')
     print(sim)
     print(ratingAverage([s[1] for s in sim]))
-    print(model)
+    print(model.dv.vectors_docs)
 
 
 if __name__ == "__main__":
