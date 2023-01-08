@@ -5,6 +5,7 @@ import re
 import requests
 import sqlite3
 import os
+import pandas as pd
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from tqdm import tqdm
@@ -103,6 +104,9 @@ class Db():
         conn.close()
         return data
 
+    def db_change(self):
+        pass
+
 def scraping(url, dbname):
     db=Db(dbname)
     # dbが存在しなければ作成
@@ -160,7 +164,6 @@ def check():
             authors[1].append(1)
         else:
             authors[1][authors[0].index(d[2])] += 1
-
 
     # for a, n in zip(authors[0], authors[1]):
     #     print(a, "：", n)
