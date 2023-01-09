@@ -54,7 +54,6 @@ def main():
     sim = model.dv.most_similar('太宰治')
     print(sim)
     print(ratingAverage([s[1] for s in sim]))
-    print(model.dv.vectors_docs)
 
 def check():
     dbname = '../bluesky_data/db/PE01.db'

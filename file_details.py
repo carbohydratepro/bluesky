@@ -3,8 +3,7 @@
 '''
 PE01.db
 宮沢賢治 : 5
-芥川龍之介 : 4
-芥川竜之介 : 1
+芥川龍之介 : 5
 太宰治 : 5
 夏目漱石 : 3
 
@@ -28,5 +27,7 @@ PE01.db
 三四郎
 
 PE0101.model
+dm=1, vector_size=300, min_count=1, epochs=20
 
+PE0102.model
 '''
