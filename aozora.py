@@ -104,8 +104,14 @@ class Db():
         conn.close()
         return data
 
-    def db_change(self):
-        pass
+    def db_update(self, command):
+        conn=sqlite3.connect(self.db)
+        cur = conn.cursor()
+        cur.execute(command)
+
+        conn.commit()
+        cur.close()
+        conn.close()
 
 def scraping(url, dbname):
     db=Db(dbname)
@@ -206,7 +212,25 @@ def shapeUp(text, pattern):
     text = re.sub(pattern, '', text)
     return text
 
+def update():
+    dbname = '../bluesky_data/db/PE01.db'
+
+    db=Db(dbname)
+    db.db_update('UPDATE books SET author = "芥川龍之介" WHERE author = "芥川竜之介"')
+    data = db.db_output()
+    dataVisualization(data, ['番号', '作品名', '著者名', '本文'])
+    # データ更新
+    #cur.execute('UPDATE db名 SET カラム名 = "変更後" WHERE カラム名 = "変更前"')
+
+    # データ削除
+    #cur.execute('DELETE FROM persons WHERE name = "Suzuki"')
+
 # soup.find('div', {'class': 'main_text'}).get_text().strip('\r''\n''\u3000').split('。')
 
+def dataVisualization(data, columns):
+    df = pd.DataFrame(data, columns=columns)
+    print(df)
+
+
 if __name__ == "__main__":
-    check()
+    update()

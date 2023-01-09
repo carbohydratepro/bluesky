@@ -1,5 +1,5 @@
 import pandas as pd
-from aozora import Db, isFile
+from aozora import Db, isFile, dataVisualization
 from janome.tokenizer import Tokenizer
 from tqdm import tqdm
 from gensim.models.doc2vec import TaggedDocument
@@ -37,7 +37,7 @@ def create(modelname):
     for strings in tqdm(documents):
         created_data.append(TaggedDocument([token.surface for token in t.tokenize(strings[0])], [strings[1]]))
 
-    model = Doc2Vec(created_data, dm=0, vector_size=200, min_count=10, epochs=20)
+    model = Doc2Vec(created_data, dm=1, vector_size=300, min_count=1, epochs=20)
     Model(modelname).save(model)
 
 
@@ -56,10 +56,6 @@ def main():
     print(ratingAverage([s[1] for s in sim]))
     print(model.dv.vectors_docs)
 
-def dataVisualization(data, columns):
-    df = pd.DataFrame(data, columns=columns)
-    print(df)
-
 def check():
     dbname = '../bluesky_data/db/PE01.db'
     db = Db(dbname)
@@ -67,4 +63,4 @@ def check():
     dataVisualization(data, ['番号', '作品名', '著者名', '本文'])
 
 if __name__ == "__main__":
-    check()
+    main()
