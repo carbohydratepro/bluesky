@@ -15,7 +15,7 @@ def readData():
 
 
 def main():
-    modelname = '../bluesky_data/model/authors_famous_all.model'
+    modelname = '../bluesky_data/model/PE0102.model'
 
     model = Doc2Vec.load(modelname)
 
