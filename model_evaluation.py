@@ -7,7 +7,7 @@ from gensim.utils import simple_preprocess
 from janome.tokenizer import Tokenizer
 
 def readData():
-    dbname = '../bluesky_data/db/PE01.db'
+    dbname = '../bluesky_data/db/authors_famous_all.db'
     db = Db(dbname)
     data = db.db_output()
     # dataVisualization(data, ['番号', '作品名', '著者名', '本文'])
@@ -15,7 +15,7 @@ def readData():
 
 
 def main():
-    modelname = '../bluesky_data/model/PE0101.model'
+    modelname = '../bluesky_data/model/authors_famous_all.model'
 
     model = Doc2Vec.load(modelname)
 
