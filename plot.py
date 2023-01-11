@@ -47,5 +47,9 @@ def main():
     plt.legend(fontsize = 5)
     plt.show()
 
+    # ラベルを正常表示
+    #大量のデータを表示
+    #都度学習して表示するような関数を定義
+
 if __name__ == "__main__":
     main()
