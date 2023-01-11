@@ -1,4 +1,3 @@
-import pandas as pd
 from aozora import Db, isFile, dataVisualization
 from janome.tokenizer import Tokenizer
 from tqdm import tqdm
