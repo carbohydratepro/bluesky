@@ -27,7 +27,12 @@ PE01.db
 三四郎
 
 PE0101.model
+著者名をラベルに
 dm=1, vector_size=300, min_count=1, epochs=20
 
 PE0102.model
+作品名をラベルに
+dm=1, vector_size=300, min_count=1, epochs=20
+
+PE0103.model
 '''
