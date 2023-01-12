@@ -7,6 +7,11 @@ from create_model import Model
 from aozora import Db
 from gensim.models.doc2vec import Doc2Vec
 from sklearn.feature_extraction.text import TfidfVectorizer
+import matplotlib.font_manager
+
+
+def font():
+    print([f.name for f in matplotlib.font_manager.fontManager.ttflist])
 
 def plot(model):
     pass
@@ -36,7 +41,7 @@ def main():
     article_list = ddf[1].unique()
 
     colors =  ["r", "g", "b", "c", "m", "y", "k", "orange"]*10
-    # plt.figure(figsize = (30, 30))
+    plt.figure(figsize = (16, 8))
     for i , v in enumerate(article_list):
         tmp_df = ddf[ddf[1] == v]
         plt.scatter(tmp_df['col1'],
@@ -44,7 +49,7 @@ def main():
                     label = v,
                     color = colors[int(i/5)+1])
 
-    plt.legend(fontsize = 5)
+    plt.legend(fontsize = 5, prop={"family":"MS Gothic"})
     plt.show()
 
     # ラベルを正常表示
