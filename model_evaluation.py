@@ -1,9 +1,6 @@
 import random
-from aozora import Db, isFile, dataVisualization
-from create_model import Model
-from gensim.models.doc2vec import TaggedDocument
+from aozora import Db, dataVisualization
 from gensim.models.doc2vec import Doc2Vec
-from gensim.utils import simple_preprocess
 from janome.tokenizer import Tokenizer
 
 def readData():

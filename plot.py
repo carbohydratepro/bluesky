@@ -1,12 +1,9 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from janome.tokenizer import Tokenizer
 from sklearn.manifold import TSNE
 from create_model import Model
 from aozora import Db
-from gensim.models.doc2vec import Doc2Vec
-from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.font_manager
 
 
