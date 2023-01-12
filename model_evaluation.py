@@ -10,17 +10,22 @@ def readData():
     # dataVisualization(data, ['番号', '作品名', '著者名', '本文'])
     return list(random.choice(data))
 
+def vectorCalculate(model, tag, text):
+    t = Tokenizer()
+    vector = model.infer_vector([token.surface for token in t.tokenize(text)])
+    return [tag, vector]
+
 
 def main():
     modelname = '../bluesky_data/model/PE0102.model'
 
     model = Doc2Vec.load(modelname)
 
-    t = Tokenizer()
     data = readData()
     text = data[3]
+    tag  = data[2]
 
-    vector = model.infer_vector([token.surface for token in t.tokenize(text)])
+    vector = vectorCalculate(model, tag, text)
 
     print(data[1], data[2])
     result = model.dv.most_similar(vector)
