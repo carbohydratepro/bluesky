@@ -5,6 +5,7 @@ import re
 import requests
 import sqlite3
 import os
+import random
 import pandas as pd
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
@@ -158,13 +159,15 @@ def main():
 
 
 def check():
-    dbname = '../bluesky_data/db/PE02.db'
+    dbname = '../bluesky_data/db/PE06.db'
 
     db = Db(dbname)
     data = db.db_output()
     authors = [[], []]
+    book_num = 0
     for d in data:
         d = list(d)
+        book_num += 1
         if d[2] not in authors[0]:
             authors[0].append(d[2])
             authors[1].append(1)
@@ -180,7 +183,7 @@ def check():
     #             "斜陽", "走れメロス", "津軽", "お伽草紙", "人間失格",
     #             "吾輩は猫である", "坊ちゃん", "草枕", "虜美人草", "三四郎"]
 
-    # new_data = []
+    new_data = []
 
     # for  sw in search_words:
     #     for d in data:
@@ -192,8 +195,23 @@ def check():
 
     #過去のデータを用いて新たなデータベースを生成する場合はコメントアウトを外す
     # 新しく生成したデータを削る
-    # new_data = new_data[0:20] + new_data[-21:-1]
-    # new_dbname = '../bluesky_data/db/PE01.db'
+
+    # data_num = 80
+
+    # f_idx = 0
+    # l_idx = 0
+
+    # for author_num in authors[1]:
+    #     l_idx += author_num
+    #     for _ in range(data_num):
+    #         c_idx = random.randint(f_idx, l_idx-1)
+    #         new_data.append(data[c_idx][1:4])
+    #         data.pop(c_idx)
+    #         l_idx -= 1
+    #     f_idx = l_idx
+
+
+    # new_dbname = '../bluesky_data/db/PE06.db'
     # reuse(new_dbname, new_data)
 
 def reuse(dbname, data):
@@ -238,4 +256,4 @@ def dataVisualization(data, columns):
 
 
 if __name__ == "__main__":
-    update()
+    check()
