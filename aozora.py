@@ -159,7 +159,7 @@ def main():
 
 
 def check():
-    dbname = '../bluesky_data/db/PE06.db'
+    dbname = '../bluesky_data/db/PE02.db'
 
     db = Db(dbname)
     data = db.db_output()
@@ -196,23 +196,27 @@ def check():
     #過去のデータを用いて新たなデータベースを生成する場合はコメントアウトを外す
     # 新しく生成したデータを削る
 
-    # data_num = 80
+    data_num = 80
 
-    # f_idx = 0
-    # l_idx = 0
+    f_idx = 0
+    l_idx = 0
 
-    # for author_num in authors[1]:
-    #     l_idx += author_num
-    #     for _ in range(data_num):
-    #         c_idx = random.randint(f_idx, l_idx-1)
-    #         new_data.append(data[c_idx][1:4])
-    #         data.pop(c_idx)
-    #         l_idx -= 1
-    #     f_idx = l_idx
+    for author_num in authors[1]:
+        l_idx += author_num
+        for _ in range(data_num):
+            c_idx = random.randint(f_idx, l_idx-1)
+            new_data.append(data[c_idx][1:4])
+            data.pop(c_idx)
+            l_idx -= 1
+        f_idx = l_idx
 
 
-    # new_dbname = '../bluesky_data/db/PE06.db'
-    # reuse(new_dbname, new_data)
+    new_dbname = '../bluesky_data/db/PE07.db'
+    reuse(new_dbname, new_data)
+
+    new_dbname = '../bluesky_data/db/PE07-test.db'
+    data = [d[1:4] for d in data]
+    reuse(new_dbname, data)
 
 def reuse(dbname, data):
     db = Db(dbname)
