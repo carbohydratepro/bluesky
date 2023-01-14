@@ -26,6 +26,12 @@ PE01.db
 草枕
 三四郎
 
+PE02.db
+宮沢賢治 : 261
+夏目漱石 : 98
+太宰治 : 272
+芥川龍之介 : 373
+
 PE0101.model
 著者名をラベルに
 dm=1, vector_size=300, min_count=1, epochs=20
@@ -35,4 +41,5 @@ PE0102.model
 dm=1, vector_size=300, min_count=1, epochs=20
 
 PE0103.model
+
 '''
