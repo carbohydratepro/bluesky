@@ -128,7 +128,7 @@ def scraping(url, dbname):
 
 
 def main():
-    dbname = '../bluesky_data/db/authors_famous_all.db'
+    dbname = '../bluesky_data/db/PE02.db'
 
     db=Db(dbname)
     # dbが存在しなければ作成
@@ -158,7 +158,7 @@ def main():
 
 
 def check():
-    dbname = '../bluesky_data/db/authors_famous_all.db'
+    dbname = '../bluesky_data/db/PE02.db'
 
     db = Db(dbname)
     data = db.db_output()
@@ -171,24 +171,24 @@ def check():
         else:
             authors[1][authors[0].index(d[2])] += 1
 
-    # for a, n in zip(authors[0], authors[1]):
-    #     print(a, "：", n)
+    for a, n in zip(authors[0], authors[1]):
+        print(a, "：", n)
 
     #データベースに検索をかける
-    search_words = ["銀河鉄道の夜", "注文の多い料理店", "セロ弾きのゴーシュ", "やまなし", "どんぐりと山猫",
-                "羅生門", "鼻", "河童", "歯車", "老年",
-                "斜陽", "走れメロス", "津軽", "お伽草紙", "人間失格",
-                "吾輩は猫である", "坊ちゃん", "草枕", "虜美人草", "三四郎"]
+    # search_words = ["銀河鉄道の夜", "注文の多い料理店", "セロ弾きのゴーシュ", "やまなし", "どんぐりと山猫",
+    #             "羅生門", "鼻", "河童", "歯車", "老年",
+    #             "斜陽", "走れメロス", "津軽", "お伽草紙", "人間失格",
+    #             "吾輩は猫である", "坊ちゃん", "草枕", "虜美人草", "三四郎"]
 
-    new_data = []
+    # new_data = []
 
-    for  sw in search_words:
-        for d in data:
-            d = list(d)
-            if (SequenceMatcher(None, d[1], sw).ratio() >= 0.95):
-                new_data.append(d[1:4])
-                print(d[1])
-                break
+    # for  sw in search_words:
+    #     for d in data:
+    #         d = list(d)
+    #         if (SequenceMatcher(None, d[1], sw).ratio() >= 0.95):
+    #             new_data.append(d[1:4])
+    #             print(d[1])
+    #             break
 
     #過去のデータを用いて新たなデータベースを生成する場合はコメントアウトを外す
     # 新しく生成したデータを削る
@@ -212,11 +212,13 @@ def shapeUp(text, pattern):
     text = re.sub(pattern, '', text)
     return text
 
-def update():
-    dbname = '../bluesky_data/db/PE01.db'
+def update(command=None):
+    dbname = '../bluesky_data/db/PE02.db'
 
     db=Db(dbname)
-    db.db_update('UPDATE books SET author = "芥川龍之介" WHERE author = "芥川竜之介"')
+    if command == None:
+        command = 'SELECT * FROM books LIMIT 1'
+    db.db_update(command)
     data = db.db_output()
     dataVisualization(data, ['番号', '作品名', '著者名', '本文'])
     # データ更新
@@ -224,6 +226,9 @@ def update():
 
     # データ削除
     #cur.execute('DELETE FROM persons WHERE name = "Suzuki"')
+
+    #'UPDATE books SET author = "芥川龍之介" WHERE author = "芥川竜之介"'
+    check()
 
 # soup.find('div', {'class': 'main_text'}).get_text().strip('\r''\n''\u3000').split('。')
 
