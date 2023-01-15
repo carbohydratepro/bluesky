@@ -3,6 +3,7 @@ from aozora import Db, dataVisualization
 from gensim.models.doc2vec import Doc2Vec
 from janome.tokenizer import Tokenizer
 from tqdm import tqdm
+from difflib import SequenceMatcher
 
 def readData(dbname=None): #任意のデータベースを読み込む関数
     if dbname == None:
@@ -20,14 +21,17 @@ def vectorCalculate(model, text): #引数からベクトルを求める関数
     vector = model.infer_vector([token.surface for token in t.tokenize(text)])
     return vector
 
-def variousDataEvaluation(): #でっかいデータから著者推定を行う関数
+def variousDataEvaluation(text=None): #でっかいデータから著者推定を行う関数
     modelname = '../bluesky_data/model/PE0201.model'
 
     model = Doc2Vec.load(modelname)
 
     data = readData()
     data = randomChoice(data)
-    text = data[3]
+    if text == None:
+        text = data[3]
+    else:
+        data = [[], [text], ['自筆']]
     tag  = data[2]
 
     vector = vectorCalculate(model, text)
@@ -50,7 +54,7 @@ def testDataEvaluation(modelname, dbname): #教師用データで学習したモ
         if d[2] not in [author[0] for author in authors]:
             authors.append([d[2], 0, 0])
 
-        if d[2] == result[0][0]:
+        if SequenceMatcher(None, d[2], result[0][0]).ratio() >= 0.8:
             evaluation_value['correct'] += 1
             authors[[author[0] for author in authors].index(d[2])][1] += 1
         else:
@@ -64,8 +68,9 @@ def testDataEvaluation(modelname, dbname): #教師用データで学習したモ
 
 
 def main():
-    rate = testDataEvaluation('../bluesky_data/model/PE0701.model', '../bluesky_data/db/PE07-test.db')
-    print("正解率：", rate, "%")
+    # rate = testDataEvaluation('../bluesky_data/model/PE0702.model', '../bluesky_data/db/PE07-test.db')
+    # print("正解率：", rate, "%")
+    variousDataEvaluation()
 
 if __name__ == "__main__":
     main()
