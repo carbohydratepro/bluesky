@@ -25,7 +25,7 @@ class Model():
 
 
 def create(modelname):
-    dbname = '../bluesky_data/db/PE02.db'
+    dbname = '../bluesky_data/db/PE07.db'
     db = Db(dbname)
     documents = [(data[3], data[2]) for data in db.db_output()] #二次元配列で文章を格納
 
@@ -44,7 +44,7 @@ def ratingAverage(num): #num：配列
     return sum(num)/len(num)
 
 def main():
-    modelname = '../bluesky_data/model/PE0201.model'
+    modelname = '../bluesky_data/model/PE0701.model'
 
     if not isFile(modelname):
         create(modelname)
@@ -55,7 +55,7 @@ def main():
     print(ratingAverage([s[1] for s in sim]))
 
 def check():
-    dbname = '../bluesky_data/db/PE01.db'
+    dbname = '../bluesky_data/db/PE07.db'
     db = Db(dbname)
     data = db.db_output()
     dataVisualization(data, ['番号', '作品名', '著者名', '本文'])
