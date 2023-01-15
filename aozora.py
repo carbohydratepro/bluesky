@@ -159,11 +159,11 @@ def main():
 
 
 def check():
-    dbname = '../bluesky_data/db/PE02.db'
+    dbname = '../bluesky_data/db/authors_famous_all.db'
 
     db = Db(dbname)
     data = db.db_output()
-    authors = [[], []]
+    authors = [[], [], []]
     book_num = 0
     for d in data:
         d = list(d)
@@ -171,11 +171,14 @@ def check():
         if d[2] not in authors[0]:
             authors[0].append(d[2])
             authors[1].append(1)
+            authors[2].append(0)
+            authors[2][-1] += int(len(d[3]))
         else:
             authors[1][authors[0].index(d[2])] += 1
+            authors[2][authors[0].index(d[2])] += int(len(d[3]))
 
-    for a, n in zip(authors[0], authors[1]):
-        print(a, "：", n)
+    for a, n , s in zip(authors[0], authors[1], authors[2]):
+        print(a, "：", n, "文字数", s)
 
     #データベースに検索をかける
     # search_words = ["銀河鉄道の夜", "注文の多い料理店", "セロ弾きのゴーシュ", "やまなし", "どんぐりと山猫",
@@ -196,27 +199,27 @@ def check():
     #過去のデータを用いて新たなデータベースを生成する場合はコメントアウトを外す
     # 新しく生成したデータを削る
 
-    data_num = 80
+    # data_num = 80
 
-    f_idx = 0
-    l_idx = 0
+    # f_idx = 0
+    # l_idx = 0
 
-    for author_num in authors[1]:
-        l_idx += author_num
-        for _ in range(data_num):
-            c_idx = random.randint(f_idx, l_idx-1)
-            new_data.append(data[c_idx][1:4])
-            data.pop(c_idx)
-            l_idx -= 1
-        f_idx = l_idx
+    # for author_num in authors[1]:
+    #     l_idx += author_num
+    #     for _ in range(data_num):
+    #         c_idx = random.randint(f_idx, l_idx-1)
+    #         new_data.append(data[c_idx][1:4])
+    #         data.pop(c_idx)
+    #         l_idx -= 1
+    #     f_idx = l_idx
 
 
-    new_dbname = '../bluesky_data/db/PE07.db'
-    reuse(new_dbname, new_data)
+    # new_dbname = '../bluesky_data/db/PE07.db'
+    # reuse(new_dbname, new_data)
 
-    new_dbname = '../bluesky_data/db/PE07-test.db'
-    data = [d[1:4] for d in data]
-    reuse(new_dbname, data)
+    # new_dbname = '../bluesky_data/db/PE07-test.db'
+    # data = [d[1:4] for d in data]
+    # reuse(new_dbname, data)
 
 def reuse(dbname, data):
     db = Db(dbname)
