@@ -50,7 +50,7 @@ def testDataEvaluation(modelname, dbname): #教師用データで学習したモ
             evaluation_value['incorrect'] += 1
 
     print(evaluation_value)
-    return (evaluation_value['correct']+evaluation_value['incorrect'])/evaluation_value['correct'] * 100
+    return evaluation_value['correct'] / (evaluation_value['correct']+evaluation_value['incorrect']) * 100
 
 
 def main():
