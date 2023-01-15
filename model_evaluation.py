@@ -15,8 +15,7 @@ def vectorCalculate(model, text):
     vector = model.infer_vector([token.surface for token in t.tokenize(text)])
     return vector
 
-
-def main():
+def variousDataEvaluation():
     modelname = '../bluesky_data/model/PE0201.model'
 
     model = Doc2Vec.load(modelname)
@@ -30,6 +29,9 @@ def main():
     print(data[1], data[2])
     result = model.dv.most_similar(vector)
     print(result)
+
+def main():
+    variousDataEvaluation()
 
 if __name__ == "__main__":
     main()
