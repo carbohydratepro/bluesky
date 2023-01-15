@@ -36,7 +36,7 @@ def create(modelname):
     for strings in tqdm(documents):
         created_data.append(TaggedDocument([token.surface for token in t.tokenize(strings[0])], [strings[1]]))
 
-    model = Doc2Vec(created_data, dm=1, vector_size=300, min_count=1, epochs=20)
+    model = Doc2Vec(created_data,  dm=0, vector_size=300, window=15, alpha=.025,min_alpha=.025, min_count=1, sample=1e-6)
     Model(modelname).save(model)
 
 
@@ -44,18 +44,18 @@ def ratingAverage(num): #num：配列
     return sum(num)/len(num)
 
 def main():
-    modelname = '../bluesky_data/model/PE0701.model'
+    modelname = '../bluesky_data/model/PE0709.model'
 
     if not isFile(modelname):
         create(modelname)
 
-    model = Model(modelname).read()
-    sim = model.dv.most_similar('太宰治')
-    print(sim)
-    print(ratingAverage([s[1] for s in sim]))
+    # model = Model(modelname).read()
+    # sim = model.dv.most_similar('太宰治')
+    # print(sim)
+    # print(ratingAverage([s[1] for s in sim]))
 
 def check():
-    dbname = '../bluesky_data/db/PE07.db'
+    dbname = '../bluesky_data/db/PE04.db'
     db = Db(dbname)
     data = db.db_output()
     dataVisualization(data, ['番号', '作品名', '著者名', '本文'])
