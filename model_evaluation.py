@@ -41,15 +41,25 @@ def testDataEvaluation(modelname, dbname): #教師用データで学習したモ
     data = readData(dbname)
 
     evaluation_value = {'correct':0, 'incorrect':0}
+    authors = [] #著者名、正解数、不正解数
+
     for d in tqdm(data):
         vector = vectorCalculate(model, d[2])
         result = model.dv.most_similar(vector)
+
+        if d[2] not in [author[0] for author in authors]:
+            authors.append([d[2], 0, 0])
+
         if d[2] == result[0][0]:
             evaluation_value['correct'] += 1
+            authors[[author[0] for author in authors].index(d[2])][1] += 1
         else:
             evaluation_value['incorrect'] += 1
+            authors[[author[0] for author in authors].index(d[2])][2] += 1
 
-    print(evaluation_value)
+    for author in authors:
+        print(author[0], ':', author[1]/(author[1]+author[2])*100, '%')
+
     return evaluation_value['correct'] / (evaluation_value['correct']+evaluation_value['incorrect']) * 100
 
 
